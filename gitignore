@@ -29,3 +29,6 @@ htmlcov/
 # Local data
 data/*
 !data/documents/
+
+# ChromaDB local database
+chroma_db/
