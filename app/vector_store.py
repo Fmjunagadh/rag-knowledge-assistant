@@ -41,3 +41,4 @@ def search(query_embedding, n_results=3):
 if __name__ == "__main__":
     print("ChromaDB initialized successfully!")
     print("Collection:", collection.name)
+    print("Documents stored:", collection.count())
