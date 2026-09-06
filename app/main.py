@@ -1,27 +1,42 @@
-from google import genai
-
-from app.config import GEMINI_API_KEY
+from app.retrieval import retrieve_documents
+from app.generator import generate_answer
 
 
 def main():
-    client = genai.Client(api_key=GEMINI_API_KEY)
-
     print("🤖 RAG Knowledge Assistant")
-    print("Type 'exit' to quit.\n")
+    print("Type 'exit' to quit.")
 
     while True:
-        user_message = input("You: ")
+        question = input("\nYou: ").strip()
 
-        if user_message.lower() == "exit":
+        if question.lower() == "exit":
             print("Goodbye!")
             break
 
-        response = client.models.generate_content(
-            model="gemini-3.7-flash",
-            contents=user_message,
+        if not question:
+            print("Please enter a question.")
+            continue
+
+        print("\n🔎 Searching knowledge base...")
+
+        documents = retrieve_documents(question)
+
+        if not documents:
+            print("\n❌ No relevant information found.")
+            continue
+
+        print(f"📚 Retrieved {len(documents)} relevant chunks.")
+
+        print("\n🧠 Generating answer...")
+
+        answer = generate_answer(
+            question,
+            documents
         )
 
-        print(f"AI: {response.text}\n")
+        print("\n🤖 Answer")
+        print("=" * 60)
+        print(answer)
 
 
 if __name__ == "__main__":
