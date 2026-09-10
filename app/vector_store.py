@@ -1,44 +1,65 @@
 import chromadb
 
 
-# Create a local ChromaDB database
-client = chromadb.PersistentClient(path="./chroma_db")
+client = chromadb.PersistentClient(
+    path="./chroma_db"
+)
 
-
-# Create or get our collection
 collection = client.get_or_create_collection(
     name="knowledge_base"
 )
 
 
-def add_documents(chunks, embeddings):
-    """
-    Store document chunks and their embeddings in ChromaDB.
-    """
+def add_documents(
+    chunks,
+    embeddings,
+):
 
-    ids = [f"chunk-{i}" for i in range(len(chunks))]
+    ids = [
+        f"{chunk.document_id}_chunk_{chunk.chunk_index:04d}"
+        for chunk in chunks
+    ]
+
+    documents = [
+        chunk.content
+        for chunk in chunks
+    ]
+
+    metadatas = [
+        {
+            "document_id": chunk.document_id,
+            "file_name": chunk.file_name,
+            "page": chunk.page if chunk.page is not None else -1,
+            "section": (
+                chunk.section
+                if chunk.section is not None
+                else ""
+            ),
+            "chunk_index": chunk.chunk_index,
+            "file_type": chunk.file_type,
+        }
+        for chunk in chunks
+    ]
 
     collection.add(
         ids=ids,
-        documents=chunks,
+        documents=documents,
         embeddings=embeddings,
+        metadatas=metadatas,
     )
 
 
-def search(query_embedding, n_results=3):
-    """
-    Search ChromaDB for the most relevant chunks.
-    """
+def search(
+    query_embedding,
+    n_results=3,
+):
 
-    results = collection.query(
+    return collection.query(
         query_embeddings=[query_embedding],
         n_results=n_results,
+        include=[
+            "documents",
+            "metadatas",
+            "distances",
+        ],
     )
-
-    return results
-
-
-if __name__ == "__main__":
-    print("ChromaDB initialized successfully!")
-    print("Collection:", collection.name)
-    print("Documents stored:", collection.count())

@@ -29,14 +29,24 @@ def main():
 
         print("\n🧠 Generating answer...")
 
-        answer = generate_answer(
+        result = generate_answer(
             question,
             documents
         )
 
         print("\n🤖 Answer")
         print("=" * 60)
-        print(answer)
+        print(result["answer"])
+
+        print("\n📚 Sources")
+        print("=" * 60)
+
+        for citation in result["citations"]:
+            print(
+                f"📄 {citation['file_name']} "
+                f"— Page {citation['page_number']} "
+                f"— Chunk {citation['chunk_index']}"
+            )
 
 
 if __name__ == "__main__":

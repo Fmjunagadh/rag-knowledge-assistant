@@ -1,41 +1,44 @@
-from pathlib import Path
-
-from app.document_loader import load_pdf
+from app.models import DocumentChunk
 
 
-def chunk_text(text: str, chunk_size: int = 500, overlap: int = 50):
-    """
-    Split text into chunks with a small overlap between chunks.
-    """
+def chunk_documents(
+    documents: list[DocumentChunk],
+    chunk_size: int = 500,
+    overlap: int = 50,
+) -> list[DocumentChunk]:
 
     chunks = []
 
-    start = 0
+    global_chunk_index = 0
 
-    while start < len(text):
-        end = start + chunk_size
+    for document in documents:
 
-        chunk = text[start:end].strip()
+        content = document.content
 
-        if chunk:
-            chunks.append(chunk)
+        start = 0
 
-        start += chunk_size - overlap
+        while start < len(content):
+
+            end = start + chunk_size
+
+            chunk_content = content[start:end].strip()
+
+            if chunk_content:
+
+                global_chunk_index += 1
+
+                chunk = DocumentChunk(
+                    document_id=document.document_id,
+                    file_name=document.file_name,
+                    content=chunk_content,
+                    page=document.page,
+                    section=document.section,
+                    chunk_index=global_chunk_index,
+                    file_type=document.file_type,
+                )
+
+                chunks.append(chunk)
+
+            start += chunk_size - overlap
 
     return chunks
-
-
-if __name__ == "__main__":
-    pdf_path = Path("data/documents/company_policy.pdf")
-
-    text = load_pdf(str(pdf_path))
-
-    chunks = chunk_text(text)
-
-    print(f"Total chunks: {len(chunks)}")
-
-    for index, chunk in enumerate(chunks, start=1):
-        print("\n" + "=" * 60)
-        print(f"CHUNK {index}")
-        print("=" * 60)
-        print(chunk)

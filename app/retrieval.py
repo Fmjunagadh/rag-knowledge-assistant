@@ -2,51 +2,51 @@ from app.embeddings import create_embedding
 from app.vector_store import search
 
 
-def retrieve_documents(query: str, n_results: int = 3):
-    """
-    Find the most relevant document chunks for a user query.
-    """
+def retrieve_documents(
+    query: str,
+    n_results: int = 3,
+):
 
-    # Convert the user's question into an embedding
-    query_embedding = create_embedding(query)
+    query_embedding = create_embedding(
+        query
+    )
 
-    # Search ChromaDB
     results = search(
         query_embedding,
         n_results=n_results,
     )
 
-    documents = results.get("documents", [[]])[0]
+    documents = results.get(
+        "documents",
+        [[]],
+    )[0]
 
-    return documents
+    metadatas = results.get(
+        "metadatas",
+        [[]],
+    )[0]
 
+    distances = results.get(
+        "distances",
+        [[]],
+    )[0]
 
-if __name__ == "__main__":
+    retrieved_documents = []
 
-    print("🔎 RAG Retrieval")
-    print("Type 'exit' to quit.")
+    for index, document in enumerate(
+        documents
+    ):
 
-    while True:
+        metadata = metadatas[index]
 
-        question = input("\nYou: ").strip()
+        distance = distances[index]
 
-        if question.lower() == "exit":
-            print("Goodbye!")
-            break
+        retrieved_documents.append(
+            {
+                "text": document,
+                "metadata": metadata,
+                "distance": distance,
+            }
+        )
 
-        if not question:
-            print("Please enter a question.")
-            continue
-
-        documents = retrieve_documents(question)
-
-        print("\n📚 Relevant Documents")
-        print("=" * 60)
-
-        if not documents:
-            print("No relevant documents found.")
-            continue
-
-        for index, document in enumerate(documents, start=1):
-            print(f"\n--- Result {index} ---")
-            print(document)
+    return retrieved_documents

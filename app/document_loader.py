@@ -1,28 +1,46 @@
 from pathlib import Path
+
 from pypdf import PdfReader
 
+from app.models import DocumentChunk
 
-def load_pdf(file_path: str) -> str:
-    """Extract text from a PDF file."""
+
+def load_pdf(file_path: str) -> list[DocumentChunk]:
+    """
+    Load a PDF and convert each page into a normalized
+    DocumentChunk object.
+    """
+
+    path = Path(file_path)
 
     reader = PdfReader(file_path)
 
-    text = ""
+    chunks = []
 
-    for page in reader.pages:
+    chunk_index = 0
+
+    for page_number, page in enumerate(reader.pages, start=1):
+
         page_text = page.extract_text()
 
-        if page_text:
-            text += page_text + "\n"
+        if not page_text or not page_text.strip():
+            continue
 
-    return text
+        chunk_index += 1
+
+        chunk = DocumentChunk(
+            document_id=path.stem,
+            file_name=path.name,
+            content=page_text.strip(),
+            page=page_number,
+            section=None,
+            chunk_index=chunk_index,
+            file_type="pdf",
+        )
+
+        chunks.append(chunk)
+
+    return chunks
 
 
-if __name__ == "__main__":
-    pdf_path = Path("data/documents/company_policy.pdf")
-
-    text = load_pdf(str(pdf_path))
-
-    print("PDF loaded successfully!")
-    print("-" * 50)
-    print(text)
+    
