@@ -125,13 +125,59 @@ if __name__ == "__main__":
 
     print("🤖 RAG Document Ingestion")
 
-    document_path = input(
-        "\nEnter document path: "
-    ).strip()
+    documents_folder = Path("data/documents")
 
-    if not document_path:
-        print("❌ No document path provided.")
-    else:
-        ingest_document(
-            document_path
+    if not documents_folder.exists():
+        print(
+            f"❌ Documents folder not found: "
+            f"{documents_folder}"
         )
+
+    else:
+
+        print(
+            f"\n📁 Scanning: "
+            f"{documents_folder}/"
+        )
+
+        supported_extensions = {
+            ".pdf",
+            ".docx",
+            ".xlsx",
+            ".xlsm",
+            ".txt",
+        }
+
+        files = [
+            file
+            for file in documents_folder.iterdir()
+            if file.is_file()
+            and file.suffix.lower()
+            in supported_extensions
+        ]
+
+        if not files:
+            print(
+                "❌ No supported documents found."
+            )
+
+        else:
+
+            print(
+                f"\n📚 Found {len(files)} "
+                f"supported documents."
+            )
+
+            for file in files:
+
+                print("\n" + "=" * 60)
+
+                ingest_document(
+                    str(file)
+                )
+
+            print("\n" + "=" * 60)
+
+            print(
+                "\n🎉 All documents processed!"
+            )
