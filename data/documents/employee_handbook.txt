@@ -1,0 +1,25 @@
+EMPLOYEE HANDBOOK
+
+Company Working Hours
+Employees normally work from 9:00 AM to 6:00 PM, Monday through Friday. Employees should inform their manager if they expect to be unavailable during core working hours.
+
+Work From Home Policy
+Employees approved for remote work should maintain a suitable working environment and remain available during core working hours. Remote employees must use company-approved devices and secure internet connections. Work from home arrangements may be reviewed by the manager based on business requirements.
+
+Leave Policy
+Employees are entitled to annual leave based on their employment policy. Planned leave should normally be requested at least 3 working days in advance. Emergency leave should be communicated to the manager as soon as possible.
+
+Information Security
+Employees must protect company information and must not share confidential business data with unauthorized people. Company documents should be stored only in approved systems.
+
+Password Policy
+Employees must use strong passwords and must never share their passwords with colleagues. Multi-factor authentication should be enabled whenever it is available for company applications.
+
+IT Device Usage
+Company laptops and other devices should be used primarily for business activities. Employees must install software only from approved sources and should report lost or stolen company devices to the IT team immediately.
+
+AI Tool Usage
+Employees may use company-approved AI tools for productivity tasks, but confidential, personal, or sensitive company information must not be entered into public AI services unless the service has been approved for that type of data.
+
+Employee Support
+For HR questions, employees should contact the HR team. For technical issues, employees should raise a ticket with the IT support team.
